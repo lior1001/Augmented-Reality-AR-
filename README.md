@@ -1,4 +1,4 @@
-# 🔮 Particle Flow AR: Multi-Target Tracking & Visualization
+# 🔮 Augmented Reality System: Warping, Occlusion and Multi-Target Tracking
 
 A real-time Augmented Reality system built with **Python** and **OpenCV**. This project implements a bidirectional particle flow simulation that dynamically connects multiple tracked targets in 3D space. It uses classical computer vision techniques to track planes, calculate 6DOF pose, and render glowing interactive elements without the use of neural networks.
 
