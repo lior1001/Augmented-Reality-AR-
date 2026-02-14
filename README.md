@@ -2,7 +2,7 @@
 
 A real-time Augmented Reality system built with **Python** and **OpenCV**. This project implements a bidirectional particle flow simulation that dynamically connects multiple tracked targets in 3D space. It uses classical computer vision techniques to track planes, calculate 6DOF pose, and render glowing interactive elements without the use of neural networks.
 
-**🎥 [View Live Demo / Output Video](YOUR_YOUTUBE_LINK_HERE)**
+**🎥 [View Live Demo / Output Video](https://drive.google.com/drive/folders/1y-dFaotwGaPQ6rZyCZPoq1q26I7MlXC3?usp=drive_link)**
 
 ## 📖 Overview
 
