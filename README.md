@@ -1,1 +1,36 @@
-🔮 Particle Flow AR: Multi-Target Tracking & VisualizationA real-time Augmented Reality system built with Python and OpenCV. This project implements a bidirectional particle flow simulation that dynamically connects multiple tracked targets in 3D space. It uses classical computer vision techniques to track planes, calculate 6DOF pose, and render glowing interactive elements without the use of neural networks.🎥 View Live Demo / Output Video📖 OverviewThis system processes raw video footage to track up to three distinct reference images simultaneously. As targets enter the frame, the system dynamically alters the topology of the visualization:2 Targets: Creates a direct, arced connection.3 Targets: Calculates a geometric centroid to form a closed-loop "energy triangle."Occlusion/Loss: Seamlessly handles target loss with a custom hysteresis buffer to prevent flickering.🛠️ The Algorithm PipelineThe system follows a multi-stage processing pipeline for every video frame:1. Robust Multi-Target TrackingFeature Extraction: Utilizes SIFT (Scale-Invariant Feature Transform) to detect keypoints invariant to scale and rotation.Matching: Uses a Brute-Force Matcher (L2 Norm) to associate frame features with reference data.Pose Estimation: Solved using cv2.solvePnPRansac. We map 2D image points to 3D world coordinates ($Z=0$ plane) to derive the Rotation ($R$) and Translation ($T$) vectors for each target.2. Dynamic Geometry (Bézier Curves)To create organic paths between portals, the system calculates Quadratic Bézier Curves in real-time ($P(t) = (1-t)^2P_0 + 2(1-t)tP_1 + t^2P_2$).Adaptive Control Points: The curve's control point ($P_1$) is not static.If 3 planes are visible, $P_1$ is pulled towards the triangle centroid to create an inward star shape.If 2 planes are visible, $P_1$ defaults to a perpendicular offset for a clean arc.3. Visual Effects & RenderingParticle System: Simulates 200 individual particles with bidirectional flow logic. Each particle maintains a deque history to render fading motion trails.Volumetric Glow: Portals are rendered using Additive Alpha Blending. Instead of solid shapes, we stack 15 concentric, semi-transparent layers with a non-linear fade function ($alpha = (1-x)^2$) to simulate a glowing gas effect.4. Stabilization & Logic (The "Micro-Buffer")A major challenge was optical flickering at the camera edges due to lens distortion. To solve this without creating "ghosts," I implemented a custom state machine:Micro-Buffer (Hysteresis): When tracking is lost, the plane is retained in memory for exactly 6 frames (0.2s). This bridges the optical gap caused by flickering but is short enough to vanish instantly when the user physically removes the target.Geometric Sanity: An "Off-Screen Kill Switch" immediately drops targets if their projected center exits the camera view, bypassing the buffer to prevent artifacts.
+# 🔮 Particle Flow AR: Multi-Target Tracking & Visualization
+
+A real-time Augmented Reality system built with **Python** and **OpenCV**. This project implements a bidirectional particle flow simulation that dynamically connects multiple tracked targets in 3D space. It uses classical computer vision techniques to track planes, calculate 6DOF pose, and render glowing interactive elements without the use of neural networks.
+
+**🎥 [View Live Demo / Output Video](YOUR_YOUTUBE_LINK_HERE)**
+
+## 📖 Overview
+
+This system processes raw video footage to track up to three distinct reference images simultaneously. As targets enter the frame, the system dynamically alters the topology of the visualization:
+* **2 Targets:** Creates a direct, arced connection.
+* **3 Targets:** Calculates a geometric centroid to form a closed-loop "energy triangle."
+* **Occlusion/Loss:** Seamlessly handles target loss with a custom hysteresis buffer to prevent flickering.
+
+## 🛠️ The Algorithm Pipeline
+
+The system follows a multi-stage processing pipeline for every video frame:
+
+### 1. Robust Multi-Target Tracking
+* **Feature Extraction:** Utilizes **SIFT (Scale-Invariant Feature Transform)** to detect keypoints invariant to scale and rotation.
+* **Matching:** Uses a **Brute-Force Matcher (L2 Norm)** to associate frame features with reference data.
+* **Pose Estimation:** Solved using **`cv2.solvePnPRansac`**. We map 2D image points to 3D world coordinates ($Z=0$ plane) to derive the Rotation ($R$) and Translation ($T$) vectors for each target.
+
+### 2. Dynamic Geometry (Bézier Curves)
+To create organic paths between portals, the system calculates **Quadratic Bézier Curves** in real-time ($P(t) = (1-t)^2P_0 + 2(1-t)tP_1 + t^2P_2$).
+* **Adaptive Control Points:** The curve's control point ($P_1$) is not static.
+    * If 3 planes are visible, $P_1$ is pulled towards the **triangle centroid** to create an inward star shape.
+    * If 2 planes are visible, $P_1$ defaults to a perpendicular offset for a clean arc.
+
+### 3. Visual Effects & Rendering
+* **Particle System:** Simulates 200 individual particles with bidirectional flow logic. Each particle maintains a `deque` history to render fading motion trails.
+* **Volumetric Glow:** Portals are rendered using **Additive Alpha Blending**. Instead of solid shapes, we stack 15 concentric, semi-transparent layers with a non-linear fade function ($alpha = (1-x)^2$) to simulate a glowing gas effect.
+
+### 4. Stabilization & Logic (The "Micro-Buffer")
+A major challenge was optical flickering at the camera edges due to lens distortion. To solve this without creating "ghosts," I implemented a custom state machine:
+* **Micro-Buffer (Hysteresis):** When tracking is lost, the plane is retained in memory for exactly **6 frames (0.2s)**. This bridges the optical gap caused by flickering but is short enough to vanish instantly when the user physically removes the target.
+* **Geometric Sanity:** An "Off-Screen Kill Switch" immediately drops targets if their projected center exits the camera view, bypassing the buffer to prevent artifacts.
